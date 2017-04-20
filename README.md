@@ -72,6 +72,17 @@ Clone folder
 
 	git clone https://github.com/bosch-ros-pkg/usb_cam.git
 
+Find the pre-trained model on the following [page](https://pjreddie.com/darknet/yolo/) or simply use a [direct link](http://pjreddie.com/media/files/yolo.weights). 
+
+Move file to weight-folder
+
+	cd [workspace]/src/DarknetROS
+	mkdir weights
+
+	# Normal model
+	cp ~/Downloads/yolo.weights ./weights 
+
+
 Build packages
 
 	cd [workspace]
@@ -80,20 +91,6 @@ Build packages
 Source ros-workspace
 
 	source devel/setup.bash
-
-Find the pre-trained model on the following [page](https://pjreddie.com/darknet/yolo/) or simply use a [direct link](http://pjreddie.com/media/files/yolo.weights). For a smaller model use [direct link](http://pjreddie.com/media/files/tiny-yolo-voc.weights)
-
-Move file to weight-folder
-
-	cd [workspace]/src/DarknetROS
-	(mkdir weights)
-
-	# Normal model
-	cp ~/Downloads/yolo.weights ./weights 
-
-	# Fast model
-	cp ~/Downloads/tiny-yolo-voc.weights ./weights/
-
 
 Run launch file 
 
