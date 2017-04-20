@@ -47,6 +47,7 @@ public:
 			nh.param<std::string>("model_cfg",model_cfg,"/cfg/yolo.cfg");
 			nh.param<std::string>("weightfile",weightfile,"/weights/yolo.weights");
 			nh.param<std::string>("datafile",datafile,"/cfg/coco.data");
+			nh.param<bool>("visualize_detections",visualizeDetections,true);
 
 			nh.param<std::string>("topic_name",topic_name,"/usb_cam/image_raw");
 			nh.param<float>("threshold",threshold,0.2);
@@ -120,9 +121,8 @@ public:
 
 			// Convert to Darknet image format.
 			image im = OpencvMat2DarkNetImage(cv_ptr->image);
-			//image im = ipl_to_image(cv_ptr->image);
-
 			execute_yolo_model2(im, threshold,boxes, probs); // Returns bounding boxes and probabilities.
+
 			publish_detections(cv_ptr->image, maxDetections, threshold, boxes, probs,names); 
 
 			free_image(im);
@@ -169,10 +169,13 @@ public:
 				float w   = b.w*(float)(img.cols);
 				float h   = b.h*(float)(img.rows);
 				printf("bb: %f %f %f %f \n", x,y,w,h);
-				rectangle(img, Rect(x,y,w,h), useColor, 2, 8, 0);
-				char numstr[30];
-				sprintf(numstr, "%s %.2f",names[topClass], prob); 
-				putText(img, numstr, Point(x+4,y-14+h),FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, 8, false);
+
+				if(visualizeDetections){
+					rectangle(img, Rect(x,y,w,h), useColor, 2, 8, 0);
+					char numstr[30];
+					sprintf(numstr, "%s %.2f",names[topClass], prob); 
+					putText(img, numstr, Point(x+4,y-14+h),FONT_HERSHEY_SIMPLEX, 1, Scalar(255, 255, 255), 2, 8, false);
+				}
 
 				// Detection in x and y coordinates (with x, y as upper left corner)
 				detections[cDetections].x = x;
@@ -252,15 +255,17 @@ public:
 		}
 		pub_bb.publish(bboxMsg);
 
-
 		// Create image publisher showing yolo detections.
-		//sensor_msgs::CameraInfoPtr cc(new sensor_msgs::CameraInfo(cinfor_->getCameraInfo()));
-		sensor_msgs::ImagePtr msg_image_out = cv_bridge::CvImage(std_msgs::Header(),"bgr8", img).toImageMsg();
-		msg_image_out->header.stamp = ros::Time::now();
-		//pub_image.publish(msg_image_out, cc);
-		pub_image.publish(msg_image_out);
-		//namedWindow( "Display window", WINDOW_NORMAL );// Create a window for display.
-		//imshow( "Display window", img);
+		if(visualizeDetections){
+
+			//sensor_msgs::CameraInfoPtr cc(new sensor_msgs::CameraInfo(cinfor_->getCameraInfo()));
+			sensor_msgs::ImagePtr msg_image_out = cv_bridge::CvImage(std_msgs::Header(),"bgr8", img).toImageMsg();
+			msg_image_out->header.stamp = ros::Time::now();
+			//pub_image.publish(msg_image_out, cc);
+			pub_image.publish(msg_image_out);
+			//namedWindow( "Display window", WINDOW_NORMAL );// Create a window for display.
+			//imshow( "Display window", img);
+		}
 		free (detections);
 		return img;
 	}
@@ -272,6 +277,7 @@ private:
 	std::string weightfile;
 	std::string topic_name;
 	std::string datafile;
+	bool visualizeDetections;
 
 	cv::Mat img;
 	ros::NodeHandle nh;

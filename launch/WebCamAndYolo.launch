@@ -7,6 +7,8 @@
 		<param name="weightfile" value="/weights/yolo.weights" />
 		<param name="datafile" value="/cfg/coco.data" />
 
+		<param name="visualize_detections" value="true" />
+
 		<param name="threshold" value="0.20" />
 		<param name="publish_image" value="True" />
 		<param name="topic_name" value="/usb_cam/image_raw" />
