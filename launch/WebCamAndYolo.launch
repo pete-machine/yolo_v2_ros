@@ -8,6 +8,7 @@
 		<param name="datafile" value="/cfg/coco.data" />
 
 		<param name="threshold" value="0.20" />
+		<param name="publish_image" value="True" />
 		<param name="topic_name" value="/usb_cam/image_raw" />
 		<!-- "/Ptgrey_cameras/right/image_raw", "/camera/image_color", "/multisense/left/image_color", "/usb_cam/image_raw"    -->
 	</node>

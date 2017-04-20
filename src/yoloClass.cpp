@@ -39,11 +39,6 @@ extern "C" {
 //using namespace std;
 using namespace cv;
 
-//char *voc_names2[] = {"aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor","barrel","birdnest"};
-//#define NCLASSES 22
-//int remapYolo2NewObjectTypes[] = {0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
-// Unknown 0, YoloVehicle 1, YoloHuman 2
-float remapYolo2NewObjectTypes[] = {0,1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0,0,0};
 class MyNode {
 public:
 	MyNode() :
@@ -108,7 +103,7 @@ public:
 	}
 	;
 
-	//void onImage(const sensor_msgs::ImageConstPtr& msg,const sensor_msgs::CameraInfoConstPtr& p) {
+
 	void onImage(const sensor_msgs::ImageConstPtr& msg) {
 		printf("Yolo: image received \r\n");
 		if(readyToPublish==1)
@@ -124,8 +119,8 @@ public:
 			}
 
 			// Convert to Darknet image format.
-			//image im = OpencvMat2DarkNetImage(cv_ptr->image);
-			image im = ipl_to_image(cv_ptr->image);
+			image im = OpencvMat2DarkNetImage(cv_ptr->image);
+			//image im = ipl_to_image(cv_ptr->image);
 
 			execute_yolo_model2(im, threshold,boxes, probs); // Returns bounding boxes and probabilities.
 			publish_detections(cv_ptr->image, maxDetections, threshold, boxes, probs,names); 
@@ -134,30 +129,9 @@ public:
 			readyToPublish = 1;
 		}
 	}
-	/*image OpencvMat2DarkNetImage(Mat src)
-	{
-		unsigned char *data = (unsigned char *)src.data;
-		int h = src.rows;
-		int w = src.cols;
-		int c = src.channels();
-		int step = src.step1();
 
-		image out = make_image(w, h, c);
-		int i, j, k, count=0;
-
-		for(k= c-1; k >= 0; --k){
-			for(i = 0; i < h; ++i){
-				for(j = 0; j < w; ++j){
-					out.data[count++] = data[i*step + j*c + k]/255.;
-				}
-			}
-		}
-
-
-		return out;
-	}*/
 	// Roughly the same as ipl_to_image() in image.c
-	image ipl_to_image(Mat src)
+	image OpencvMat2DarkNetImage(Mat src)
 	{
 	    unsigned char *data = (unsigned char *)src.data;
 	    int h = src.rows;
@@ -268,24 +242,23 @@ public:
 		bboxMsg.data.clear();
 
 		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
-//			bboxMsg.data.push_back(bbs[iBbs].distance);
-//			bboxMsg.data.push_back(bbs[iBbs].angle);
+
 			bboxMsg.data.push_back(detections[iBbs].x/img.cols);
 			bboxMsg.data.push_back(detections[iBbs].y/img.rows);
 			bboxMsg.data.push_back(detections[iBbs].w/img.cols);
 			bboxMsg.data.push_back(detections[iBbs].h/img.rows);
 			bboxMsg.data.push_back(detections[iBbs].prob);
-			bboxMsg.data.push_back(remapYolo2NewObjectTypes[int(detections[iBbs].objectType)]);
+			bboxMsg.data.push_back(int(detections[iBbs].objectType));
 		}
 		pub_bb.publish(bboxMsg);
 
 
 		// Create image publisher showing yolo detections.
 		//sensor_msgs::CameraInfoPtr cc(new sensor_msgs::CameraInfo(cinfor_->getCameraInfo()));
-		sensor_msgs::ImagePtr msg_out = cv_bridge::CvImage(std_msgs::Header(),"bgr8", img).toImageMsg();
-		msg_out->header.stamp = ros::Time::now();
-		//pub_image.publish(msg_out, cc);
-		pub_image.publish(msg_out);
+		sensor_msgs::ImagePtr msg_image_out = cv_bridge::CvImage(std_msgs::Header(),"bgr8", img).toImageMsg();
+		msg_image_out->header.stamp = ros::Time::now();
+		//pub_image.publish(msg_image_out, cc);
+		pub_image.publish(msg_image_out);
 		//namedWindow( "Display window", WINDOW_NORMAL );// Create a window for display.
 		//imshow( "Display window", img);
 		free (detections);
