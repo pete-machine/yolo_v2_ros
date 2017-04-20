@@ -1,0 +1,48 @@
+<launch>	
+	<!-- Makes yolo detection node -->
+	<node type="darknet_ros_node" name="darknet_ros" pkg="darknet_ros" respawn="true" output="screen">
+		<param name="model_cfg" value="$(find darknet_ros)/cfg/yoloSmall20.cfg" />
+		<param name="weightfile" value="$(find darknet_ros)/weight/yoloSmall20.weights" />
+		<param name="threshold" value="0.2" />
+		<param name="topic_name" value="/multisense/left/image_color" />
+		<!-- "/Ptgrey_cameras/right/image_raw", "/camera/image_color", "/multisense/left/image_color"    -->
+	</node>
+
+
+	<!-- RUNS THERMAL CAM -->
+		<node name="camnode" pkg="camera_aravis" type="camnode" output="screen" >
+	</node>
+
+	<!-- RUNS  MULTISENSE S21-->
+  <arg name="ip_address" default="10.66.171.21" />
+  <arg name="namespace"  default="multisense" />
+  <arg name="mtu"        default="7200" />
+  <arg name="sensor"     default="SL" />
+  <arg name="launch_robot_state_publisher" default="true" />
+
+  <!-- Robot state publisher -->
+  <group if = "$(arg launch_robot_state_publisher)">
+    <param name="robot_description"
+           textfile="$(find multisense_description)/urdf/multisense$(arg sensor).urdf"/>
+    <node pkg="robot_state_publisher" type="state_publisher" name="$(arg namespace)_state_publisher">
+      <param name="publish_frequency" type="double" value="50.0" />
+      <remap from="joint_states" to="/$(arg namespace)/joint_states" />
+      <param name="tf_prefix" value="/$(arg namespace)" />
+    </node>
+  </group>
+
+  <!-- ROS Driver -->
+   <node pkg="multisense_ros" ns="$(arg namespace)" type="ros_driver" name="multisense_driver" output="screen">
+     <param name="sensor_ip"   value="$(arg ip_address)" />
+     <param name="sensor_mtu"  value="$(arg mtu)" />
+     <param name="tf_prefix"   value="/$(arg namespace)" />
+  </node>
+
+  <!-- Color Laser PointCloud Publisher -->
+   <node pkg="multisense_ros" ns="$(arg namespace)" type="color_laser_publisher" name="color_laser_publisher" output="screen">
+      <remap from="image_rect_color" to="/$(arg namespace)/left/image_rect_color" />
+      <remap from="lidar_points2" to="/$(arg namespace)/lidar_points2" />
+      <remap from="camera_info" to="/$(arg namespace)/left/image_rect_color/camera_info" />
+  </node>
+
+</launch>

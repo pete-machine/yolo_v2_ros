@@ -1,0 +1,20 @@
+<launch>	
+	<!-- Makes yolo detection node -->
+	<node type="darknet_ros_node" name="yolo" pkg="darknet_ros" respawn="true" output="screen">
+		<param name="model_cfg" value="$(find darknet_ros)/cfg/yolo20.cfg" />
+		<param name="weightfile" value="$(find darknet_ros)/weight/yolo20.weights" />
+		<param name="threshold" value="0.2" />
+		<param name="topic_name" value="/Logitech_webcam/image_raw" />
+		<!-- "/Ptgrey_cameras/right/image_raw", "/camera/image_color", "/multisense/left/image_color", "/usb_cam/image_raw"    -->
+	</node>
+
+<!-- Uncompressing logitech cam
+	<node name="republish" pkg="image_transport" type="republish" args="compressed in:=/Logitech_webcam/image_raw _image_transport:=compressed raw out:=/Logitech_webcam/image_raw" respawn="false" output="screen">
+	</node> 
+
+	<node name="image_view_YOLO" pkg="image_view" type="image_view" respawn="false" output="screen">
+			<remap from="image" to="/yolo/imageYolo"/>
+			<param name="autosize" value="false" />
+	</node> 
+-->
+</launch>

@@ -1,0 +1,32 @@
+<launch>	
+	<!-- Makes yolo detection node -->
+	<node type="darknet_ros_node" name="yolo" pkg="darknet_ros" respawn="true" output="screen">
+		<param name="model_cfg" value="$(find darknet_ros)/cfg/yoloSmall20.cfg" />
+		<param name="weightfile" value="$(find darknet_ros)/weight/yoloSmall20.weights" />
+		<param name="threshold" value="0.2" />
+		<param name="topic_name" value="/usb_cam/image_raw" />
+		<!-- "/Ptgrey_cameras/right/image_raw", "/camera/image_color", "/multisense/left/image_color", "/usb_cam/image_raw"    -->
+	</node>
+
+
+	<!-- RUNS GigE THERMAL/BASLE CAM -->
+	<!-- node name="camnode" pkg="camera_aravis" type="camnode" output="screen" > 
+	</node -->
+
+	<!-- usb_cam: RUNS usb CAM -->
+	<node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+		<param name="video_device" value="/dev/video0" />
+		<param name="image_width" value="640" /> <!-- 640 -->
+		<param name="image_height" value="480" /> <!-- 480 -->
+		<param name="pixel_format" value="yuyv" />
+		<param name="camera_frame_id" value="usb_cam" />
+		<param name="io_method" value="mmap"/>
+	</node>
+	
+  <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/yolo/imageYolo/"/>
+    <param name="autosize" value="false" />
+  </node>
+
+</launch>
+
