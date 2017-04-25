@@ -1,6 +1,6 @@
-# Darknet and Yolo9000 for ROS
+# Yolo version 2 for ROS
 Yolo9000 wrapped in a ros-package for running it with ROS. 
-A lot of credit goes to Joseph Chet Redmon - you might enjoy his [resume](https://pjreddie.com/static/Redmon%20Resume.pdf) - and co. for implementing a deep learning framework [Darknet](http://pjreddie.com/darknet/) and the super fast object detector [YOLO](https://arxiv.org/abs/1506.02640) and [YOLO9000](https://pjreddie.com/media/files/papers/YOLO9000.pdf).
+A lot of credit goes to Joseph Chet Redmon - you might enjoy his [resume](https://pjreddie.com/static/Redmon%20Resume.pdf) - and co. for implementing a deep learning framework [Darknet](http://pjreddie.com/darknet/) and the super fast object detector [YOLO](https://arxiv.org/abs/1506.02640) and [YOLOv2 / YOLO9000](https://pjreddie.com/media/files/papers/YOLO9000.pdf).
 
 The make-file have been converted to a CMakeLists.
 (Code test on ubuntu 16.04, cuda 8, opencv 3.2.0-dev, ROS kinetic)
@@ -16,19 +16,19 @@ Go to ros-workspace source folder in a terminal
 Clone folder in terminal.
 
 	The repository needs to be updated. 
-	$ git clone https://github.com/PeteHeine/yolo9000ros
+	$ git clone https://github.com/PeteHeine/yolo_v2_ros
 	
 
 Download yolo model to directory the weight directory.
 
-	cd [workspace]/src/yolo9000ros
+	cd [workspace]/src/yolo_v2_ros
 	mkdir weights
 	cd weigths
 	wget http://pjreddie.com/media/files/yolo.weights
 
 Test yolo without ROS, without opencv and without GPU.
 	
-	cd [workspace]/src/yolo9000ros
+	cd [workspace]/src/yolo_v2_ros
 	make
 	./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg
 
@@ -36,14 +36,14 @@ To run with GPU and opencv. Open Makefile, set GPU=1 and OPENCV=1 and make agian
 
 ### Build project with ROS
 
-Open [workspace]/src/yolo9000ros/CMakeList.txt and ensure that
+Open [workspace]/src/yolo_v2_ros/CMakeList.txt and ensure that
 
 	set(OPENCV 1)
 	set(ROS_INTERFACE 1) 
 
 
 #### For CPU 
-Open [workspace]/src/yolo9000ros/CMakeList.txt and ensure that
+Open [workspace]/src/yolo_v2_ros/CMakeList.txt and ensure that
 
 	set(GPU 0)
 
@@ -51,7 +51,7 @@ Open [workspace]/src/yolo9000ros/CMakeList.txt and ensure that
 Software requires CUDA to be installed. 
 Go to [download page](https://developer.nvidia.com/cuda-downloads) select your platform, download and follow instructions.
 
-Open [workspace]/src/yolo9000ros/CMakeList.txt and ensure that
+Open [workspace]/src/yolo_v2_ros/CMakeList.txt and ensure that
 
 	set(GPU 1)
 #### Build
@@ -76,7 +76,7 @@ Find the pre-trained model on the following [page](https://pjreddie.com/darknet/
 
 Move file to weight-folder
 
-	cd [workspace]/src/yolo9000ros
+	cd [workspace]/src/yolo_v2_ros
 	mkdir weights
 
 	# Normal model
@@ -94,7 +94,7 @@ Source ros-workspace
 
 Run launch file 
 
-	roslaunch yolo9000ros RunWebCamAndYolo.launch	
+	roslaunch yolo_v2_ros RunWebCamAndYolo.launch	
 
 
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(yolo9000ros)
+project(yolo_v2_ros)
 
 #set(DEBUG 0) # Not implemented.
 set(GPU 1)
@@ -324,14 +324,14 @@ endif()
 if(ROS_INTERFACE)
 
 	if(GPU)
-		cuda_add_executable(yolo9000ros_node src/yoloClass.cpp ${ALL_FILES} )
+		cuda_add_executable(yolo_v2_ros_node src/yoloClass.cpp ${ALL_FILES} )
 	else()
-		add_executable(yolo9000ros_node src/yoloClass.cpp ${ALL_FILES} )
+		add_executable(yolo_v2_ros_node src/yoloClass.cpp ${ALL_FILES} )
 	endif()
 
-	add_dependencies(yolo9000ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} htf_safe_msgs_gencpp)
+	add_dependencies(yolo_v2_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} htf_safe_msgs_gencpp)
 	# Specify libraries to link a library or executable target against
-	target_link_libraries(yolo9000ros_node
+	target_link_libraries(yolo_v2_ros_node
 	  ${OpenCV_LIBS}
 	  ${catkin_LIBRARIES}
 	  ${CMAKE_THREAD_LIBS_INIT}

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>yolo9000ros</name>
+  <name>yolo_v2_ros</name>
   <version>0.0.0</version>
-  <description>The darknet_ros package</description>
+  <description>A ros package for yolo version 2</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
