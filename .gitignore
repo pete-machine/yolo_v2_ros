@@ -19,6 +19,8 @@ weights/
 darknet
 .fuse*
 
+launch/backup/
+
 # OS Generated #
 .DS_Store*
 ehthumbs.db

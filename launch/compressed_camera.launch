@@ -1,0 +1,38 @@
+<launch>	
+
+	<!-- Uncompressing logitech cam -->
+	<node name="republish" pkg="image_transport" type="republish" args="compressed in:=/Logitech_webcam/image_raw _image_transport:=compressed raw out:=/Logitech_webcam/image_raw" respawn="false" output="screen">
+	</node>
+
+	<node name="image_raw" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/Logitech_webcam/image_raw"/>
+		<param name="autosize" value="false" />
+	</node>
+
+	<!-- Makes yolo detection node -->
+	<node type="yolo_v2_ros_node" name="yolo" pkg="yolo_v2_ros" respawn="true" output="screen">
+
+		<param name="basedir" value="$(find yolo_v2_ros)" />
+		<param name="model_cfg" value="/cfg/yolo.cfg" />
+		<param name="weightfile" value="/weights/yolo.weights" />
+		<param name="datafile" value="/cfg/coco.data" />
+
+		<param name="visualize_detections" value="true" />
+
+		<param name="threshold" value="0.40" />
+		<param name="publish_image" value="True" />
+		<param name="topic_name" value="/Logitech_webcam/image_raw" />
+	</node>
+	
+
+
+	<!-- Makes viewing node for showing detected objects. -->
+	<node name="yolo2" pkg="image_view" type="image_view" respawn="false" output="screen">
+			<remap from="image" to="/yolo/imageYolo"/>
+			<param name="autosize" value="false" />
+	</node> 
+
+
+
+</launch>
+
