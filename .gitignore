@@ -14,7 +14,7 @@ opencv/
 convnet/
 decaf/
 submission/
-cfg/
+#cfg/
 weights/
 darknet
 .fuse*
