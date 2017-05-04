@@ -27,6 +27,8 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   camera_info_manager
+  message_generation
+  msg_boundingbox
   #htf_safe_msgs
 )
 
@@ -282,12 +284,12 @@ set(HEADER_FILES
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  CATKIN_DEPENDS message_runtime
 #  INCLUDE_DIRS include
-#  LIBRARIES darknet_ros
-#  CATKIN_DEPENDS rosc roscpp std_msgs
+#  LIBRARIES deepAnomaly
+#  CATKIN_DEPENDS rospy std_msgs
 #  DEPENDS system_lib
 )
-
 ###########
 ## Build ##
 ###########
@@ -329,7 +331,8 @@ if(ROS_INTERFACE)
 		add_executable(yolo_v2_ros_node src/yoloClass.cpp ${ALL_FILES} )
 	endif()
 
-	add_dependencies(yolo_v2_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} htf_safe_msgs_gencpp)
+	#add_dependencies(yolo_v2_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} htf_safe_msgs_gencpp)
+	add_dependencies(yolo_v2_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 	# Specify libraries to link a library or executable target against
 	target_link_libraries(yolo_v2_ros_node
 	  ${OpenCV_LIBS}

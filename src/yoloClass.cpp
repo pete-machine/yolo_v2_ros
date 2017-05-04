@@ -9,7 +9,10 @@
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/MultiArrayDimension.h>
 #include <std_msgs/MultiArrayLayout.h>
+#include <std_msgs/Header.h>
 //#include <htf_safe_msgs/SAFEObstacleMsg.h>
+#include <msg_boundingbox/Boundingboxes.h>
+#include <msg_boundingbox/Boundingbox.h>
 #include <sensor_msgs/image_encodings.h>
 //#include <sensor_msgs/CompressedImage.h>
 #include <image_transport/image_transport.h>
@@ -77,8 +80,9 @@ public:
 			std::vector<std::string> outputTopicTmp;
 			outputTopicTmp.push_back("BBox");
 			outputTopicTmp.push_back(strParts[1]);
-			pub_bb = nh.advertise<std_msgs::Float64MultiArray>(boost::algorithm::join(outputTopicTmp,"/"), 1);
-
+			//pub_bb = nh.advertise<std_msgs::Float64MultiArray>(boost::algorithm::join(outputTopicTmp,"/"), 1);
+			pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(boost::algorithm::join(outputTopicTmp,"/"), 1);
+			
 			readyToPublish = 1;
 
 			useRemapping = 1;
@@ -119,12 +123,12 @@ public:
 				ROS_ERROR("cv_bridge exception: %s", e.what());
 				return;
 			}
-
+			
 			// Convert to Darknet image format.
 			image im = OpencvMat2DarkNetImage(cv_ptr->image);
 			execute_yolo_model2(im, threshold,boxes, probs); // Returns bounding boxes and probabilities.
 
-			publish_detections(cv_ptr->image, maxDetections, threshold, boxes, probs,names); 
+			publish_detections(cv_ptr, maxDetections, threshold, boxes, probs,names); 
 
 			free_image(im);
 			readyToPublish = 1;
@@ -152,8 +156,11 @@ public:
 	    }
 	    return out;
 	}
-	Mat publish_detections(Mat img, int num, float thresh, box *boxesIn, float **probsIn, char **names)
+	//Mat publish_detections(Mat img, int num, float thresh, box *boxesIn, float **probsIn, char **names)
+	Mat publish_detections(cv_bridge::CvImagePtr cv_ptr_in, int num, float thresh, box *boxesIn, float **probsIn, char **names)
 	{
+		Mat img = cv_ptr_in->image;
+		std_msgs::Header tmpHeader = cv_ptr_in->header;
 		int i;
 		int cDetections = 0;
 		box_prob* detections = (box_prob*)calloc(maxDetections, sizeof(box_prob));
@@ -242,9 +249,33 @@ public:
 
 
 		// Create bounding box publisher (multi array)
-		std_msgs::Float64MultiArray bboxMsg;
-		bboxMsg.data.clear();
 
+		msg_boundingbox::Boundingboxes msgObstacles;
+		msgObstacles.header = tmpHeader;
+		msgObstacles.boundingboxes.clear();
+		msg_boundingbox::Boundingbox tmpMsgObstacle;
+
+		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
+			tmpMsgObstacle.x = detections[iBbs].x/img.cols; 
+			tmpMsgObstacle.y = detections[iBbs].y/img.rows;
+			tmpMsgObstacle.w = detections[iBbs].w/img.cols;
+			tmpMsgObstacle.h = detections[iBbs].h/img.rows;
+			tmpMsgObstacle.prob = detections[iBbs].prob;
+
+			if(useRemapping){ 
+				tmpMsgObstacle.objectType = remapYolo2NewObjectTypes[int(detections[iBbs].objectType)];
+			}
+			else{
+				tmpMsgObstacle.objectType = int(detections[iBbs].objectType);
+			}
+
+			msgObstacles.boundingboxes.push_back(tmpMsgObstacle); 
+		}
+		pub_bb.publish(msgObstacles);
+		
+		/*std_msgs::Float64MultiArray bboxMsg;
+		bboxMsg.data.clear();
+		
 		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
 
 			bboxMsg.data.push_back(detections[iBbs].x/img.cols);
@@ -259,7 +290,7 @@ public:
 				bboxMsg.data.push_back(int(detections[iBbs].objectType));
 			}
 		}
-		pub_bb.publish(bboxMsg);
+		pub_bb.publish(bboxMsg);*/
 
 		// Create image publisher showing yolo detections.
 		if(visualizeDetections){
@@ -293,7 +324,7 @@ private:
 	image_transport::Publisher pub_image;
 	image_transport::Subscriber sub_image;
 	ros::Publisher pub_bb;
-	ros::Publisher pub_bbSAFE;
+	//ros::Publisher pub_bbSAFE;
 	//boost::shared_ptr<camera_info_manager::CameraInfoManager> cinfor_;
 	bool readyToPublish;
 	image **alphabet;

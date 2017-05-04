@@ -44,10 +44,15 @@
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <!-- <build_depend>htf_safe_msgs</build_depend> -->
+  <build_depend>msg_boundingbox</build_depend>
+  <build_depend>message_generation</build_depend>
+
   <run_depend>rosc</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
-  <!-- <run_depend>htf_safe_msgs</run_depend> --> 
+  <!-- <run_depend>htf_safe_msgs</run_depend> -->
+  <run_depend>msg_boundingbox</run_depend>
+  <run_depend>message_runtime</run_depend>	
 
 
   <!-- The export tag contains other, unspecified, tags -->
