@@ -72,8 +72,6 @@ Clone folder
 
 	git clone https://github.com/bosch-ros-pkg/usb_cam.git
 
-Find the pre-trained model on the following [page](https://pjreddie.com/darknet/yolo/) or simply use a [direct link](http://pjreddie.com/media/files/yolo.weights). 
-
 Move file to weight-folder
 
 	cd [workspace]/src/yolo_v2_ros
