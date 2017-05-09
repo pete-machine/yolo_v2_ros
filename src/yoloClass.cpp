@@ -99,7 +99,7 @@ public:
 			probs = (float**)calloc(maxDetections, sizeof(float *));
 			for(int j = 0; j < maxDetections; ++j) probs[j] = (float*)calloc(nClasses + 1, sizeof(float *));
 
-			printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TOPIC: %s \r\n",topic_name.c_str());
+			printf("Yolo TOPIC: %s \r\n",topic_name.c_str());
 		};
 
 	~MyNode() {
@@ -111,7 +111,7 @@ public:
 
 
 	void onImage(const sensor_msgs::ImageConstPtr& msg) {
-		printf("Yolo: image received \r\n");
+		//printf("Yolo: image received \r\n");
 		if(readyToPublish==1)
 		{
 			readyToPublish = 0;
@@ -164,7 +164,7 @@ public:
 		int i;
 		int cDetections = 0;
 		box_prob* detections = (box_prob*)calloc(maxDetections, sizeof(box_prob));
-		printf("Number of bounding boxes %i: \n", num);
+		//printf("Number of bounding boxes %i: \n", num);
 		for(i = 0; i < num; ++i){
 			int topClass = max_index(probs[i],nClasses);
 			float prob = probs[i][topClass];
@@ -176,7 +176,7 @@ public:
 				float y = (b.y-b.h/2.)*(float)(img.rows);
 				float w   = b.w*(float)(img.cols);
 				float h   = b.h*(float)(img.rows);
-				printf("bb: %f %f %f %f \n", x,y,w,h);
+				//printf("bb: %f %f %f %f \n", x,y,w,h);
 
 				if(visualizeDetections){
 					rectangle(img, Rect(x,y,w,h), useColor, 2, 8, 0);

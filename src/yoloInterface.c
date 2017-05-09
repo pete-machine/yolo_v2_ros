@@ -33,8 +33,8 @@ void execute_yolo_model2(image im, float thresh,box *boxes,float **probs) //, *f
 
     network_predict(glo_net, X);
 
-    printf("Predicted in %f seconds.\n", sec(clock()-time1));
-    printf("Not related to network %f seconds.\n", sec(time2-time1));
+    //printf("Predicted in %f seconds.\n", sec(clock()-time1));
+    //printf("Not related to network %f seconds.\n", sec(time2-time1));
 
     float hier_thresh = 0; // ???????
 
