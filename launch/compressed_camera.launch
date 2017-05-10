@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>	
 
 	<!-- Uncompressing logitech cam -->
@@ -11,17 +12,18 @@
 
 	<!-- Makes yolo detection node -->
 	<node type="yolo_v2_ros_node" name="yolo" pkg="yolo_v2_ros" respawn="true" output="screen">
-
 		<param name="basedir" value="$(find yolo_v2_ros)" />
 		<param name="model_cfg" value="/cfg/yolo.cfg" />
 		<param name="weightfile" value="/weights/yolo.weights" />
 		<param name="datafile" value="/cfg/coco.data" />
-
-		<param name="visualize_detections" value="true" />
-
 		<param name="threshold" value="0.40" />
-		<param name="publish_image" value="True" />
-		<param name="topic_name" value="/Logitech_webcam/image_raw" />
+
+
+		<param name="topic_image_in" value="/Logitech_webcam/image_raw" />
+		<param name="topic_bbox_out" value="/det/Multisense/yolo/BBoxes2d" />
+		
+		<param name="visualize_detections" value="true" />
+		<param name="topic_visualize_out" value="/det/Multisense/yolo/BBoxes2d_Image" />
 	</node>
 	
 

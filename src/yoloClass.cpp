@@ -50,13 +50,15 @@ public:
 			nh.param<std::string>("model_cfg",model_cfg,"/cfg/yolo.cfg");
 			nh.param<std::string>("weightfile",weightfile,"/weights/yolo.weights");
 			nh.param<std::string>("datafile",datafile,"/cfg/coco.data");
+			
+			nh.param<std::string>("topic_image_in",topic_image_in,"/usb_cam/image_raw");
+
 			nh.param<bool>("visualize_detections",visualizeDetections,true);
-
-			nh.param<std::string>("topic_name",topic_name,"/usb_cam/image_raw");
+			nh.param<std::string>("topic_visualize_out",topic_visualize_out,"/yolo/imageYolo");
+			nh.param<std::string>("topic_bbox_out",topic_bbox_out,"/yolo/bbox");
 			nh.param<float>("threshold",threshold,0.2);
-			std::vector<std::string> strParts;
-			boost::split(strParts,topic_name,boost::is_any_of("/"));
-
+			//std::vector<std::string> strParts;
+			//boost::split(strParts,topic_image_in,boost::is_any_of("/"));
 			model_cfg = basedir+model_cfg;
 			weightfile = basedir+weightfile;
 			datafile = basedir+datafile;
@@ -66,22 +68,23 @@ public:
 			nh.param<double>("FOV_horizontalDeg",FOV_horizontalDeg,83.0);
 			nh.param<double>("angleTiltDegrees",angleTiltDegrees,7.0);
 			nh.param<double>("cameraHeight",cameraHeight,1.9);
-
 			FOV_verticalRad = FOV_verticalDeg*M_PI/180;
 			FOV_horizontalRad = FOV_horizontalDeg*M_PI/180;
 			angleTiltRad = angleTiltDegrees*M_PI/180;
 
 			//cinfor_ = boost::shared_ptr<camera_info_manager::CameraInfoManager>(new camera_info_manager::CameraInfoManager(nh, "test", ""));
-			//sub_image = it.subscribeCamera(topic_name.c_str(), 1, &MyNode::onImage, this);
+			//sub_image = it.subscribeCamera(topic_image_in.c_str(), 1, &MyNode::onImage, this);
 
-			sub_image = it.subscribe(topic_name.c_str(), 1, &MyNode::onImage, this);
-			pub_image = it.advertise("imageYolo", 1);
-			
-			std::vector<std::string> outputTopicTmp;
-			outputTopicTmp.push_back("BBox");
-			outputTopicTmp.push_back(strParts[1]);
+			sub_image = it.subscribe(topic_image_in.c_str(), 1, &MyNode::onImage, this);
+			if(visualizeDetections) {
+				pub_image = it.advertise(topic_visualize_out.c_str(), 1);
+			}
+			//std::vector<std::string> outputTopicTmp;
+			//outputTopicTmp.push_back("BBox");
+			//outputTopicTmp.push_back(strParts[1]);
 			//pub_bb = nh.advertise<std_msgs::Float64MultiArray>(boost::algorithm::join(outputTopicTmp,"/"), 1);
-			pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(boost::algorithm::join(outputTopicTmp,"/"), 1);
+			//pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(boost::algorithm::join(outputTopicTmp,"/"), 1);
+			pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(topic_bbox_out.c_str(), 1);
 			
 			readyToPublish = 1;
 
@@ -94,12 +97,10 @@ public:
 
 			maxDetections = load_yolo_model((char*)model_cfg.c_str(), (char*)weightfile.c_str());
 			nClasses = get_nclasses();
-
 			boxes = (box*)calloc(maxDetections, sizeof(box));
 			probs = (float**)calloc(maxDetections, sizeof(float *));
 			for(int j = 0; j < maxDetections; ++j) probs[j] = (float*)calloc(nClasses + 1, sizeof(float *));
-
-			printf("Yolo TOPIC: %s \r\n",topic_name.c_str());
+			printf("Yolo TOPIC: %s \r\n",topic_image_in.c_str());
 		};
 
 	~MyNode() {
@@ -312,7 +313,9 @@ private:
 	std::string basedir;
 	std::string model_cfg;
 	std::string weightfile;
-	std::string topic_name;
+	std::string topic_image_in;
+	std::string topic_bbox_out;
+	std::string topic_visualize_out;
 	std::string datafile;
 	bool visualizeDetections;
 

@@ -1,9 +1,5 @@
+<?xml version="1.0"?>
 <launch>
-
-  <node name="image_raw_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/Multisense/left/image_rect_color"/>
-    <param name="autosize" value="false" />
-  </node>
 
 	<!-- Makes yolo detection node -->
 	<node type="yolo_v2_ros_node" name="yolo" pkg="yolo_v2_ros" respawn="true" output="screen">
@@ -12,18 +8,24 @@
 		<param name="model_cfg" value="/cfg/yolo.cfg" />
 		<param name="weightfile" value="/weights/yolo.weights" />
 		<param name="datafile" value="/cfg/coco.data" />
-
-		<param name="visualize_detections" value="true" />
-
 		<param name="threshold" value="0.40" />
-		<param name="publish_image" value="True" />
-		<param name="topic_name" value="/Multisense/left/image_rect_color" />
-	</node>
-	
-  <node name="image_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/yolo/imageYolo/"/>
-    <param name="autosize" value="false" />
-  </node>
 
+		<param name="publish_image" value="True" />
+		<param name="topic_image_in" value="/Multisense/left/image_rect_color" />
+		<param name="topic_bbox_out" value="/det/Multisense/yolo/BBoxes2d" />
+		
+		<param name="visualize_detections" value="true" />
+	</node>
+<!-- 
+	<node name="image_raw_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/Multisense/left/image_rect_color"/>
+		<param name="autosize" value="false" />
+	</node>	
+
+	<node name="image_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/yolo/imageYolo/"/>
+		<param name="autosize" value="false" />
+	</node>
+-->
 </launch>
 
