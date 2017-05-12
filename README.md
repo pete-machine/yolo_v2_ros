@@ -30,12 +30,16 @@ Test yolo without ROS, without opencv and without GPU.
 	
 	cd [workspace]/src/yolo_v2_ros
 	make
-	./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg
+	./darknet detect cfg/yolo.cfg weights/yolo.weights data/dog.jpg
 
 To run with GPU and opencv. Open Makefile, set GPU=1 and OPENCV=1 and make agian. 
 
 ### Build project with ROS
+First clone bounding box message type in workspace. 
 
+	cd [workspace]/src/
+	git clone https://github.com/PeteHeine/msg_boundingbox.git
+	
 Open [workspace]/src/yolo_v2_ros/CMakeList.txt and ensure that
 
 	set(OPENCV 1)
@@ -71,8 +75,6 @@ Go again to ros-workspace source folder.
 Clone folder
 
 	git clone https://github.com/bosch-ros-pkg/usb_cam.git
-
-Find the pre-trained model on the following [page](https://pjreddie.com/darknet/yolo/) or simply use a [direct link](http://pjreddie.com/media/files/yolo.weights). 
 
 Move file to weight-folder
 
