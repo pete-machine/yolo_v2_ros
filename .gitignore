@@ -2,8 +2,8 @@
 *.dSYM
 *.csv
 *.out
+*.png
 
-*.jpg
 old/
 mnist/
 #data/
