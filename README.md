@@ -30,7 +30,7 @@ Test yolo without ROS, without opencv and without GPU.
 	
 	cd [workspace]/src/yolo_v2_ros
 	make
-	./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg
+	./darknet detect cfg/yolo.cfg weights/yolo.weights data/dog.jpg
 
 To run with GPU and opencv. Open Makefile, set GPU=1 and OPENCV=1 and make agian. 
 
