@@ -96,7 +96,7 @@ Source ros-workspace
 
 Run launch file 
 
-	roslaunch yolo_v2_ros RunWebCamAndYolo.launch	
+	roslaunch yolo_v2_ros usb_web_cam.launch
 
 
 
