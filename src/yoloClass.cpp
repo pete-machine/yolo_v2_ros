@@ -257,10 +257,10 @@ public:
 		msg_boundingbox::Boundingbox tmpMsgObstacle;
 
 		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
-			tmpMsgObstacle.x = detections[iBbs].x/img.cols; 
-			tmpMsgObstacle.y = detections[iBbs].y/img.rows;
-			tmpMsgObstacle.w = detections[iBbs].w/img.cols;
-			tmpMsgObstacle.h = detections[iBbs].h/img.rows;
+			tmpMsgObstacle.x = detections[iBbs].x/float(img.cols); 
+			tmpMsgObstacle.y = detections[iBbs].y/float(img.rows);
+			tmpMsgObstacle.w = detections[iBbs].w/float(img.cols);
+			tmpMsgObstacle.h = detections[iBbs].h/float(img.rows);
 			tmpMsgObstacle.prob = detections[iBbs].prob;
 
 			if(useRemapping){ 
