@@ -26,7 +26,7 @@ Download yolo model to directory the weight directory.
 	cd weigths
 	wget http://pjreddie.com/media/files/yolo.weights
 
-Test yolo without ROS, without opencv and without GPU.
+Test yolo without ROS, without opencv and without GPU (In Makefile, set GPU=0 and OPENCV=0 and make.)
 	
 	cd [workspace]/src/yolo_v2_ros
 	make
