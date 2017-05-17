@@ -51,6 +51,10 @@ int load_yolo_model(char *cfgfile, char *weightfile, int select_gpu)
     int maxSize = 0;
     printf("Loading: %s \r\n",cfgfile);
 
+#ifdef GPU
+    cuda_set_device(select_gpu);
+#endif
+
     glo_net = parse_network_cfg(cfgfile);
 
     if(weightfile){
@@ -58,9 +62,7 @@ int load_yolo_model(char *cfgfile, char *weightfile, int select_gpu)
     }
 
     set_batch_network(&glo_net, 1);
-#ifdef GPU
-    cuda_set_device(select_gpu);
-#endif
+
 
     layer l = glo_net.layers[glo_net.n-1];
 
