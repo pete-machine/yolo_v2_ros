@@ -46,7 +46,7 @@ void execute_yolo_model2(image im, float thresh,box *boxes,float **probs) //, *f
     free_image(imresized);
 }
 
-int load_yolo_model(char *cfgfile, char *weightfile)
+int load_yolo_model(char *cfgfile, char *weightfile, int select_gpu)
 {
     int maxSize = 0;
     printf("Loading: %s \r\n",cfgfile);
@@ -58,7 +58,9 @@ int load_yolo_model(char *cfgfile, char *weightfile)
     }
 
     set_batch_network(&glo_net, 1);
-
+#ifdef GPU
+    cuda_set_device(select_gpu);
+#endif
 
     layer l = glo_net.layers[glo_net.n-1];
 

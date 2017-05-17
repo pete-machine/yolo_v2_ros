@@ -57,6 +57,7 @@ public:
 			nh.param<std::string>("topic_visualize_out",topic_visualize_out,"/yolo/imageYolo");
 			nh.param<std::string>("topic_bbox_out",topic_bbox_out,"/yolo/bbox");
 			nh.param<float>("threshold",threshold,0.2);
+			nh.param<int>("gpu_device",gpu_device,0);
 			//std::vector<std::string> strParts;
 			//boost::split(strParts,topic_image_in,boost::is_any_of("/"));
 			model_cfg = basedir+model_cfg;
@@ -95,7 +96,7 @@ public:
 			name_list = basedir+ '/' + name_list;
 			names = get_labels((char*)name_list.c_str());
 
-			maxDetections = load_yolo_model((char*)model_cfg.c_str(), (char*)weightfile.c_str());
+			maxDetections = load_yolo_model((char*)model_cfg.c_str(), (char*)weightfile.c_str(),gpu_device);
 			nClasses = get_nclasses();
 			boxes = (box*)calloc(maxDetections, sizeof(box));
 			probs = (float**)calloc(maxDetections, sizeof(float *));
@@ -310,6 +311,7 @@ public:
 private:
 	double imageResize;
 	float threshold;
+	int gpu_device; 
 	std::string basedir;
 	std::string model_cfg;
 	std::string weightfile;
