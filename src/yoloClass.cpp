@@ -38,7 +38,7 @@ extern "C" {
 
 //using namespace std;
 using namespace cv;
-float remapYolo2NewObjectTypes[] = {0,1,1,1,1,1,1,1,1,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,3,3,3,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3};
+float remapYolo2NewObjectTypes[] = {0, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 class MyNode {
 public:
 	MyNode() :
@@ -157,7 +157,7 @@ public:
 		int i;
 		int cDetections = 0;
 		box_prob* detections = (box_prob*)calloc(maxDetections, sizeof(box_prob));
-		printf("Number of bounding boxes %i: \n", num);
+		//printf("Number of bounding boxes %i: \n", num);
 		for(i = 0; i < num; ++i){
 			int topClass = max_index(probs[i],nClasses);
 			float prob = probs[i][topClass];
