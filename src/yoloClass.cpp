@@ -11,8 +11,8 @@
 #include <std_msgs/MultiArrayLayout.h>
 #include <std_msgs/Header.h>
 //#include <htf_safe_msgs/SAFEObstacleMsg.h>
-#include <msg_boundingbox/Boundingboxes.h>
-#include <msg_boundingbox/Boundingbox.h>
+#include <boundingbox_msgs/Boundingboxes.h>
+#include <boundingbox_msgs/Boundingbox.h>
 #include <sensor_msgs/image_encodings.h>
 //#include <sensor_msgs/CompressedImage.h>
 #include <image_transport/image_transport.h>
@@ -83,8 +83,8 @@ public:
 			//outputTopicTmp.push_back("BBox");
 			//outputTopicTmp.push_back(strParts[1]);
 			//pub_bb = nh.advertise<std_msgs::Float64MultiArray>(boost::algorithm::join(outputTopicTmp,"/"), 1);
-			//pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(boost::algorithm::join(outputTopicTmp,"/"), 1);
-			pub_bb = nh.advertise<msg_boundingbox::Boundingboxes>(topic_bbox_out.c_str(), 1);
+			//pub_bb = nh.advertise<boundingbox_msgs::Boundingboxes>(boost::algorithm::join(outputTopicTmp,"/"), 1);
+			pub_bb = nh.advertise<boundingbox_msgs::Boundingboxes>(topic_bbox_out.c_str(), 1);
 			
 			readyToPublish = 1;
 
@@ -251,10 +251,10 @@ public:
 
 		// Create bounding box publisher (multi array)
 
-		msg_boundingbox::Boundingboxes msgObstacles;
+		boundingbox_msgs::Boundingboxes msgObstacles;
 		msgObstacles.header = tmpHeader;
 		msgObstacles.boundingboxes.clear();
-		msg_boundingbox::Boundingbox tmpMsgObstacle;
+		boundingbox_msgs::Boundingbox tmpMsgObstacle;
 
 		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
 			tmpMsgObstacle.x = detections[iBbs].x/float(img.cols); 

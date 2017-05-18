@@ -28,7 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   camera_info_manager
   message_generation
-  msg_boundingbox
+  boundingbox_msgs
   #htf_safe_msgs
 )
 
