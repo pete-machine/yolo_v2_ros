@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-
 	<!-- Makes yolo detection node -->
 	<node type="yolo_v2_ros_node" name="yolo" pkg="yolo_v2_ros" respawn="true" output="screen">
 
@@ -16,16 +15,17 @@
 		
 		<param name="visualize_detections" value="true" />
 	</node>
-<!-- 
-	<node name="image_raw_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
-		<remap from="image" to="/Multisense/left/image_rect_color"/>
-		<param name="autosize" value="false" />
-	</node>	
 
-	<node name="image_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
-		<remap from="image" to="/yolo/imageYolo/"/>
-		<param name="autosize" value="false" />
-	</node>
+<!-- Show detections
+  <node name="image_raw_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/Multisense/left/image_rect_color"/>
+    <param name="autosize" value="false" />
+  </node>
+
+  <node name="image_yolo" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/yolo/imageYolo/"/>
+    <param name="autosize" value="false" />
+  </node>
 -->
 </launch>
 
