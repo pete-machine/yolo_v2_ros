@@ -11,7 +11,7 @@
 	</node>
 
 	<node name="image_raw" pkg="image_view" type="image_view" respawn="false" output="screen">
-		<remap from="image" to="/Logitech_webcam/image_raw"/>
+		<remap from="image" to="/usb_cam/image_raw"/>
 		<param name="autosize" value="false" />
 	</node>
 
