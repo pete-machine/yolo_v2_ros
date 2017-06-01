@@ -166,6 +166,13 @@ public:
 		int i;
 		int cDetections = 0;
 		box_prob* detections = (box_prob*)calloc(maxDetections, sizeof(box_prob));
+
+
+		boundingbox_msgs::Boundingboxes msgObstacles;
+		msgObstacles.header = tmpHeader;
+		msgObstacles.boundingboxes.clear();
+		boundingbox_msgs::Boundingbox tmpMsgObstacle;
+
 		//printf("Number of bounding boxes %i: \n", num);
 		for(i = 0; i < num; ++i){
 			int topClass = max_index(probs[i],nClasses);
@@ -195,104 +202,34 @@ public:
 				detections[cDetections].prob = prob;
 				detections[cDetections].objectType = topClass;
 
+				tmpMsgObstacle.x = detections[cDetections].x/float(img.cols); 
+				tmpMsgObstacle.y = detections[cDetections].y/float(img.rows);
+				tmpMsgObstacle.w = detections[cDetections].w/float(img.cols);
+				tmpMsgObstacle.h = detections[cDetections].h/float(img.rows);
+				tmpMsgObstacle.prob = detections[cDetections].prob;
+				tmpMsgObstacle.objectName = names[topClass];
+
+				if(useRemapping){ 
+					tmpMsgObstacle.objectType = remapYolo2NewObjectTypes[int(detections[cDetections].objectType)];
+				}
+				else{
+					tmpMsgObstacle.objectType = int(detections[cDetections].objectType);
+				}
+
+				msgObstacles.boundingboxes.push_back(tmpMsgObstacle); 
 				cDetections++;
 			}
 		}
 
 
-		/* Creating visual marker
-		visualization_msgs::Marker marker;
-		marker.header.frame_id = "/laser";
-		marker.header.stamp = ros::Time();
-		marker.ns = "my_namespace";
-		marker.id = 0;
-		marker.type = visualization_msgs::Marker::CYLINDER;
-		marker.action = visualization_msgs::Marker::ADD;
-		marker.pose.orientation.x = 0.0;
-		marker.pose.orientation.y = 0.0;*/
-
-		
-		// An estimate of the distance to the object is calculated using the camera setup.
-		// Estimate is based on two assumptions: 1) The surface is flat. 2) The bottom of the bounding box is the bottom of the detected object.
-		/*if(1){
-			printf("Start bboxSAFE \n");
-			double resolutionVertical = img.rows;
-			double resolutionHorisontal = img.cols;
-			//htf_safe_msgs::SAFEObstacleMsg msgObstacle;
-			// MAYBE CLEARING IS NEEDED
-			msgObstacle.xCoordinate.clear();
-			msgObstacle.yCoordinate.clear();
-			msgObstacle.zCoordinate.clear();
-			msgObstacle.quality.clear();
-			msgObstacle.objectType.clear();
-			msgObstacle.objectID.clear();
-
-			msgObstacle.header.stamp = ros::Time::now();
-
-			for (int n = 0; n < cDetections;n++){
-				double buttomRowPosition = detections[n].y+detections[n].h; // bbs(n,2)-bbs(n,4);
-				double ColPosition = detections[n].x+detections[n].w/2; // bbs(n,2)-bbs(n,4);
-
-				double distance = tan(M_PI/2-(angleTiltRad+FOV_verticalRad/2) + FOV_verticalRad*(resolutionVertical-buttomRowPosition)/resolutionVertical)*cameraHeight;
-				double angle =((ColPosition-resolutionHorisontal/2)/resolutionHorisontal)*FOV_verticalRad;
-				double xCoordinate = cos(angle)*distance;
-				double yCoordinate = sin(angle)*distance;
-				msgObstacle.xCoordinate.push_back(xCoordinate);
-				msgObstacle.yCoordinate.push_back(yCoordinate);
-				msgObstacle.zCoordinate.push_back(0.0);
-				msgObstacle.quality.push_back(detections[n].prob);
-				msgObstacle.objectType.push_back(detections[n].objectType);
-				msgObstacle.objectID.push_back(0);
-				//cout << "x1:" << bbs[n].x1 << ", y2:" << bbs[n].y2 << ", w3:" << bbs[n].width3 << ", h4:" << bbs[n].height4 << ", s5: " << bbs[n].score5 << ",a5: " << bbs[n].angle << endl;
-				//cout << "Distance: " <<  bbs[n].distance << endl;
-			}
-			pub_bbSAFE.publish(msgObstacle);
-		}*/
-
-
 		// Create bounding box publisher (multi array)
 
-		boundingbox_msgs::Boundingboxes msgObstacles;
-		msgObstacles.header = tmpHeader;
-		msgObstacles.boundingboxes.clear();
-		boundingbox_msgs::Boundingbox tmpMsgObstacle;
 
-		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
-			tmpMsgObstacle.x = detections[iBbs].x/float(img.cols); 
-			tmpMsgObstacle.y = detections[iBbs].y/float(img.rows);
-			tmpMsgObstacle.w = detections[iBbs].w/float(img.cols);
-			tmpMsgObstacle.h = detections[iBbs].h/float(img.rows);
-			tmpMsgObstacle.prob = detections[iBbs].prob;
 
-			if(useRemapping){ 
-				tmpMsgObstacle.objectType = remapYolo2NewObjectTypes[int(detections[iBbs].objectType)];
-			}
-			else{
-				tmpMsgObstacle.objectType = int(detections[iBbs].objectType);
-			}
+		//for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
 
-			msgObstacles.boundingboxes.push_back(tmpMsgObstacle); 
-		}
+		//}
 		pub_bb.publish(msgObstacles);
-		
-		/*std_msgs::Float64MultiArray bboxMsg;
-		bboxMsg.data.clear();
-		
-		for (int iBbs = 0; iBbs < cDetections; ++iBbs) {
-
-			bboxMsg.data.push_back(detections[iBbs].x/img.cols);
-			bboxMsg.data.push_back(detections[iBbs].y/img.rows);
-			bboxMsg.data.push_back(detections[iBbs].w/img.cols);
-			bboxMsg.data.push_back(detections[iBbs].h/img.rows);
-			bboxMsg.data.push_back(detections[iBbs].prob);
-			if(useRemapping){ 
-				bboxMsg.data.push_back(remapYolo2NewObjectTypes[int(detections[iBbs].objectType)]);
-			}
-			else{
-				bboxMsg.data.push_back(int(detections[iBbs].objectType));
-			}
-		}
-		pub_bb.publish(bboxMsg);*/
 
 		// Create image publisher showing yolo detections.
 		if(visualizeDetections){

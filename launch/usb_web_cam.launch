@@ -25,7 +25,7 @@
 		<param name="threshold" value="0.40" />
 
 
-		<param name="topic_image_in" value="/Logitech_webcam/image_raw" />
+		<param name="topic_image_in" value="/usb_cam/image_raw" />
 		<param name="topic_bbox_out" value="/det/Multisense/yolo/BBoxes2d" />
 		
 		<param name="visualize_detections" value="true" />

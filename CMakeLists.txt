@@ -54,28 +54,24 @@ set(CUDA_NVCC_FLAGS
 
 ##################################### Only for print out stuff #######################################################
 if (OpenCV_FOUND)
-	message("OPENCV found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") 	
+	message("OPENCV found!") 	
 else()
 	message("OPENCV not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 endif()
 
 if (CUDA_FOUND)
-	message("CUDA found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") 	#set(COMMON_FLAGS "${COMMON_FLAGS} -DGPU")
+	message("CUDA found!") 	#set(COMMON_FLAGS "${COMMON_FLAGS} -DGPU")
 else()
 	message("CUDA not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 endif()
 message("COMMON_FLAGS: " ${COMMON_FLAGS})
 message("CUDA_NVCC_FLAGS: " ${CUDA_NVCC_FLAGS})
 message("CUDA_curand_LIBRARY: " ${CUDA_curand_LIBRARY})
-#message("OpenCV_LIBS: " ${OpenCV_LIBS})
-#message("catkin_LIBRARIES: " ${catkin_LIBRARIES})
-#message("CMAKE_THREAD_LIBS_INIT: ",${CMAKE_THREAD_LIBS_INIT})
 message("CUDA_LIBRARIES: " ${CUDA_LIBRARIES})
 message("CUDA_CUBLAS_LIBRARIES: " ${CUDA_CUBLAS_LIBRARIES})
 message("CUDA_curand_LIBRARY: " ${CUDA_curand_LIBRARY})
+
 # INCLUDES
-#message("catkin_INCLUDE_DIRS: " ${catkin_INCLUDE_DIRS})
-#message("OpenCV_INCLUDE_DIRS: " ${OpenCV_INCLUDE_DIRS})
 message("CUDA_INCLUDE_DIRS: " ${CUDA_INCLUDE_DIRS})
 #########################################################################################################################
 

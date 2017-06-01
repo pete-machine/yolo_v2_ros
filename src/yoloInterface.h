@@ -1,6 +1,9 @@
 #ifndef YOLO_H
 #define YOLO_H
+#include <iostream>
+#include <string>
 #include "image.h"
+
 
 typedef struct{
     float x, y, w, h,prob,objectType;
